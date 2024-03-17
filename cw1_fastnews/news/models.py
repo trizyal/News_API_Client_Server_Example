@@ -6,6 +6,8 @@ class Author(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
     email = models.EmailField()
+    username = models.CharField(max_length=10)
+    password = models.CharField(max_length=30)
 
 class News(models.Model):
     news_id = models.AutoField(primary_key=True, unique=True)
