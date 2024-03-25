@@ -11,7 +11,7 @@ def login():
         "Content-Type": "application/x-www-form-urlencoded"
     }
 
-    response = requests.post(url, data=data)
+    response = requests.post(url, data=data, headers=headers)
 
     print(response.text)
     print(response.status_code)
@@ -22,5 +22,5 @@ def logout():
     print(response.text)
     print(response.status_code)
 
-# login()
-logout()
+login()
+# logout()

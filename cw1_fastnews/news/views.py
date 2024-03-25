@@ -25,9 +25,6 @@ def login(request):
 @csrf_exempt
 def logout(request):
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            return HttpResponse('Logged out', status=200, content_type='text/plain')
-        else:
-            HttpResponse('error login', status=200, content_type='text/plain')
+        return HttpResponse('Logged out', status=200, content_type='text/plain')
     else:
         return HttpResponse('Invalid request', status=409, content_type='text/plain')
