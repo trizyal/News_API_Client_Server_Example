@@ -2,12 +2,12 @@ from django.db import models
 
 # Create your models here.
 class Author(models.Model):
-    author_id = models.AutoField(primary_key=True, unique=True)
+    author_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
     email = models.EmailField()
-    username = models.CharField(max_length=10)
-    password = models.CharField(max_length=30)
+    username = models.CharField(max_length=10, unique=True)
+    password = models.CharField(max_length=30, required=True)
 
 class News(models.Model):
     news_id = models.AutoField(primary_key=True, unique=True)

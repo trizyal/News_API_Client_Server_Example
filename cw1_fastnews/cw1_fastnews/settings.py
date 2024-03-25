@@ -70,6 +70,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cw1_fastnews.wsgi.application'
 
+AUTH_USER_MODEL = 'news.Author'
+
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

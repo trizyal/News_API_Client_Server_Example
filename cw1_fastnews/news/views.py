@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .models import Author, News
@@ -12,7 +13,8 @@ def login(request):
         u = request.POST.get('username')
         p = request.POST.get('password')
         try:
-            user = Author.objects.get(username=u)
+            # user = Author.objects.get(username=u)
+            user = authenticate(username=u, password=p)
             if user.username == u and user.password == p:
                 return HttpResponse('Welcome ' + user.first_name, status=200, content_type='text/plain')
             else:
@@ -30,5 +32,5 @@ def logout(request):
         return HttpResponse('Invalid request', status=409, content_type='text/plain')
 
 
-@csrf_exempt
-def post_story(request):
+# @csrf_exempt
+# def post_story(request):
