@@ -1,5 +1,7 @@
 import requests
 
+session = requests.Session()
+
 def login():
     url = ('http://127.0.0.1:8000/api/login/')
     data = {
@@ -11,14 +13,14 @@ def login():
         "Content-Type": "application/x-www-form-urlencoded"
     }
 
-    response = requests.post(url, data=data, headers=headers)
+    response = session.post(url, data=data, headers=headers)
 
     print(response.text)
     print(response.status_code)
 
 def logout():
     url = ('http://127.0.0.1:8000/api/logout/')
-    response = requests.post(url)
+    response = session.post(url)
     print(response.text)
     print(response.status_code)
 
