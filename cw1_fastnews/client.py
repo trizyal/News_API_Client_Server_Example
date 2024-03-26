@@ -6,7 +6,7 @@ def login():
     url = ('http://127.0.0.1:8000/api/login/')
     data = {
         "username": "tej",
-        "password": "123123"
+        "password": "Qwerty@123"
     }
 
     headers = {
@@ -25,4 +25,4 @@ def logout():
     print(response.status_code)
 
 login()
-# logout()
+logout()
