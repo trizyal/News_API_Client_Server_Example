@@ -21,8 +21,8 @@ class Author(User):
 class News(models.Model):
     news_id = models.AutoField(primary_key=True, unique=True)
     headline = models.CharField(max_length=64)
-    category = models.Choices('pol', 'art', 'tech', 'trivia')
-    region = models.Choices('uk', 'eu', 'w')
+    category = models.CharField(choices=(('pol', 'Politics'), ('art', 'Art'), ('tech', 'Technology'), ('trivia', 'Trivial)')), max_length=10, default='trivia')
+    region = models.CharField(choices=(('uk', 'United Kingdom'), ('eu', 'Europe'), ('w', 'World')), max_length=10, default='w')
     author = models.ForeignKey(Author, default=None, on_delete=models.SET_NULL, null=True)
-    date = models.DateField()
+    date = models.DateField(auto_now=True)
     details = models.CharField(max_length=128)
