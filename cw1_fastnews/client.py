@@ -40,8 +40,9 @@ def logout():
     print(response.status_code)
 
 def post_story(payload):
-    payload = json.dumps(payload)
-    response = s.session.post(s.sessionURL + "/api/stories/", json=payload)
+    headers = {"Content-Type": "application/json"}
+    # payload = json.dumps(payload)
+    response = s.session.post(s.sessionURL + "/api/stories/", data=payload, headers=headers)
     print(response.text)
     print(response.status_code)
 
@@ -55,6 +56,20 @@ def post_test():
     }
     payload = json.dumps(payload)
     response = s.session.post(url, data=payload)
+    print(response.text)
+    print(response.status_code)
+
+def get_news():
+    url = ('http://127.0.0.1:8000/api/stories/')
+    payload = {
+        "story_cat": "tech",
+        "story_region": "uk",
+        "story_date": "2024-03-27"
+    }
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    response = s.session.get(url, data=payload, headers=headers)
+    # r = json.loads(response.text)
+    # print(r)
     print(response.text)
     print(response.status_code)
 
@@ -84,6 +99,7 @@ def print_client_options():
     print("\t\t delete")
 
 def process_input(command, args):
+
     if command == "login":
         if args[1] == "-help":
             print("Usage: login <url>")
@@ -91,12 +107,21 @@ def process_input(command, args):
         username = input("Enter username: ")
         password = input("Enter password: ")
         login(args[1], {"username": username, "password": password})
+
     elif command == "logout":
         logout()
+
     elif command == "post":
-        post_test()
+        headline = input("Enter headline: ")
+        category = input("Enter category: ")
+        region = input("Enter region: ")
+        details = input("Enter details: ")
+        payload = {"headline": headline, "category": category, "region": region, "details": details}
+        post_story(json.dumps(payload))
+
     elif command == "news":
-        pass
+        get_news()
+
     elif command == "list":
         pass
     elif command == "delete":
