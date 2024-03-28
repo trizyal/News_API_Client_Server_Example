@@ -9,8 +9,8 @@ class UserSession:
 s = UserSession()
 
 def login(url, data):
-    headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    response = s.session.post(url + "/api/login/", data=data, headers=headers)
+    # headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    response = s.session.post(url + "/api/login/", data=data)
 
     print(response.text)
     print(response.status_code)
@@ -40,36 +40,65 @@ def logout():
     print(response.status_code)
 
 def post_story(payload):
-    headers = {"Content-Type": "application/json"}
-    # payload = json.dumps(payload)
-    response = s.session.post(s.sessionURL + "/api/stories/", data=payload, headers=headers)
+    response = s.session.post(s.sessionURL + "/api/stories/", data=payload)
     print(response.text)
     print(response.status_code)
 
-def post_test():
-    url = ('http://127.0.0.1:8000/api/stories/')
-    payload = {
-        "headline": "Test headline",
-        "category": "pol",
-        "region": "uk",
-        "details": "Test details"
-    }
-    payload = json.dumps(payload)
-    response = s.session.post(url, data=payload)
-    print(response.text)
-    print(response.status_code)
+# def post_test():
+#     url = ('http://127.0.0.1:8000/api/stories/')
+#     payload = {
+#         "headline": "Test headline",
+#         "category": "pol",
+#         "region": "uk",
+#         "details": "Test details"
+#     }
+#     payload = json.dumps(payload)
+#     response = s.session.post(url, data=payload)
+#     print(response.text)
+#     print(response.status_code)
 
-def get_news():
+def get_news(id, payload):
     url = ('http://127.0.0.1:8000/api/stories/')
-    payload = {
-        "story_cat": "tech",
-        "story_region": "uk",
-        "story_date": "2024-03-27"
-    }
+    # payload = {
+    #     "story_cat": "*",
+    #     "story_region": "*",
+    #     "story_date": "*"
+    # }
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    response = s.session.get(url, data=payload, headers=headers)
-    # r = json.loads(response.text)
-    # print(r)
+    response = s.session.get(url, params=payload, headers=headers)
+    print(response.status_code)
+    if response.status_code == 200:
+        display_news(response.text)
+    else:
+        print(response.text)
+
+def process_news_switches(data):
+    id = "*"
+    cat = "*"
+    reg = "*"
+    date = "*"
+    for switch in data:
+        if switch.startswith("-id="):
+            id = switch.split("=")[1][1:-1] # remove quotes from string
+        elif switch.startswith("-cat="):
+            cat = switch.split("=")[1][1:-1] # remove quotes from string
+        elif switch.startswith("-reg="):
+            reg = switch.split("=")[1][1:-1] # remove quotes from string
+        elif switch.startswith("-date="):
+            date = switch.split("=")[1][1:-1] # remove quotes from string
+    payload = {"story_cat": cat, "story_region": reg, "story_date": date}
+    # print(payload)
+    get_news(id, payload)
+
+
+def display_news(data):
+    stories = json.loads(data)
+    for story in stories:
+        print(json.dumps(story, indent=4))
+
+
+def delete_story(key):
+    response = s.session.delete(s.sessionURL + "/api/stories/" + key)
     print(response.text)
     print(response.status_code)
 
@@ -120,12 +149,14 @@ def process_input(command, args):
         post_story(json.dumps(payload))
 
     elif command == "news":
-        get_news()
+        process_news_switches(args)
 
     elif command == "list":
         pass
     elif command == "delete":
-        pass
+        key = args[1]
+        delete_story(key)
+
     elif command == "help":
         print_client_options()
     elif command == "test":
