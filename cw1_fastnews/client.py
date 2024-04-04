@@ -9,7 +9,6 @@ class UserSession:
 s = UserSession()
 
 def login(url, data):
-    # headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = s.session.post("http://" + url + "/api/login", data=data)
 
     print(response.text)
@@ -17,24 +16,7 @@ def login(url, data):
     if response.status_code == 200:
         s.sessionURL = url
 
-def default_login():
-    url = ('http://127.0.0.1:8000/api/login')
-    data = {
-        "username": "tej",
-        "password": "Qwerty@123"
-    }
-
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-
-    response = s.session.post(url, data=data, headers=headers)
-
-    print(response.text)
-    print(response.status_code)
-
 def logout():
-    # url = ('http://127.0.0.1:8000')
     response = s.session.post("http://" + s.sessionURL+"/api/logout")
     print(response.text)
     print(response.status_code)
@@ -44,21 +26,10 @@ def post_story(payload):
     print(response.text)
     print(response.status_code)
 
-# def post_test():
-#     url = ('http://127.0.0.1:8000/api/stories/')
-#     payload = {
-#         "headline": "Test headline",
-#         "category": "pol",
-#         "region": "uk",
-#         "details": "Test details"
-#     }
-#     payload = json.dumps(payload)
-#     response = s.session.post(url, data=payload)
-#     print(response.text)
-#     print(response.status_code)
 
 def list_agencies():
     url = ('http://newssites.pythonanywhere.com/api/directory/')
+
     response = s.session.get(url)
     data = json.loads(response.text)
 
@@ -73,13 +44,13 @@ def get_news(url, payload):
         data = json.loads(response.text)
         print("\n")
         for story in data["stories"]:
-            print("Key: ".ljust(15), story["key"])
-            print("Headline: ".ljust(15) + story["headline"])
-            print("Category: ".ljust(15) + story["story_cat"])
-            print("Region: ".ljust(15) + story["story_region"])
-            print("Author: ".ljust(15) + story["author"])
-            print("Date: ".ljust(15) + story["story_date"])
-            print("Details: ".ljust(15) + story["story_details"])
+            print("Key".ljust(12)+ ":".ljust(5), story["key"])
+            print("Headline".ljust(12) + ":".ljust(5) + story["headline"])
+            print("Category".ljust(12) + ":".ljust(5) + story["story_cat"])
+            print("Region".ljust(12) + ":".ljust(5) + story["story_region"])
+            print("Author".ljust(12) + ":".ljust(5) + story["author"])
+            print("Date".ljust(12) + ":".ljust(5) + story["story_date"])
+            print("Details".ljust(12) + ":".ljust(5) + story["story_details"])
             print("\n")
     else:
         print("\n")
@@ -137,28 +108,28 @@ def delete_story(key):
 
 def client_welcome():
     title = '''
-    ooooo      ooo oooooooooooo oooooo   oooooo     oooo  .oooooo..o
-    `888b.     `8' `888'     `8  `888.    `888.     .8'  d8P'    `Y8
-     8 `88b.    8   888           `888.   .8888.   .8'   Y88bo.
-     8   `88b.  8   888oooo8       `888  .8'`888. .8'     `"Y8888o.
-     8     `88b.8   888    "        `888.8'  `888.8'          `"Y88b
-     8       `888   888       o      `888'    `888'      oo     .d8P
-    o8o        `8  o888ooooood8       `8'      `8'       8""88888P'
+    \t\tooooo      ooo oooooooooooo oooooo   oooooo     oooo  .oooooo..o
+    \t\t`888b.     `8' `888'     `8  `888.    `888.     .8'  d8P'    `Y8
+    \t\t 8 `88b.    8   888           `888.   .8888.   .8'   Y88bo.
+    \t\t 8   `88b.  8   888oooo8       `888  .8'`888. .8'     `"Y8888o.
+    \t\t 8     `88b.8   888    "        `888.8'  `888.8'          `"Y88b
+    \t\t 8       `888   888       o      `888'    `888'      oo     .d8P
+    \t\to8o        `8  o888ooooood8       `8'      `8'       8""88888P'
             '''
-
+    print("\n\n")
     print(title)
-    print("\n\n\tWelcome to the news client.")
-    print("\n\t\tEnter a command to continue.")
-    print("\t\tOr type 'help' for a list of commands.")
+    print("\n\n\t\033[3mWelcome to the news client.\n")
+    print("\tEnter a command to continue.")
+    print("\tOr type \033[0m'help'\033[3m for a list of commands.\033[0m\n\n")
 
 def print_client_options():
-    print("\n\tOptions available:")
-    print("\t\t login")
-    print("\t\t logout")
-    print("\t\t post")
-    print("\t\t news")
-    print("\t\t list")
-    print("\t\t delete")
+    print("\nOptions available:")
+    print("\tlogin")
+    print("\tlogout")
+    print("\tpost")
+    print("\tnews")
+    print("\tlist")
+    print("\tdelete")
 
 def process_input(command, args):
 
@@ -186,8 +157,12 @@ def process_input(command, args):
 
     elif command == "list":
         data = list_agencies()
+        print("\n")
         for agency in data:
-            print(json.dumps(agency, indent=4))
+            print("Agency Name".ljust(15) + ":".ljust(5) + agency["agency_name"])
+            print("Agency Code".ljust(15) + ":".ljust(5) + agency["agency_code"])
+            print("URL".ljust(15) + ":".ljust(5) + agency["url"])
+            print("\n")
 
     elif command == "delete":
         key = args[1]
@@ -195,8 +170,6 @@ def process_input(command, args):
 
     elif command == "help":
         print_client_options()
-    elif command == "test":
-        default_login()
     else:
         print("Invalid command. Type 'help' for a list of commands.")
 
