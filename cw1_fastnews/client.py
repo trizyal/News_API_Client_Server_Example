@@ -4,13 +4,13 @@ import json
 class UserSession:
     def __init__(self):
         self.session = requests.Session()
-        self.sessionURL = 'http://127.0.0.1:8000'
+        self.sessionURL = '127.0.0.1:8000'
 
 s = UserSession()
 
 def login(url, data):
     # headers = {"Content-Type": "application/x-www-form-urlencoded"}
-    response = s.session.post(url + "/api/login/", data=data)
+    response = s.session.post("http://" + url + "/api/login", data=data)
 
     print(response.text)
     print(response.status_code)
@@ -18,7 +18,7 @@ def login(url, data):
         s.sessionURL = url
 
 def default_login():
-    url = ('http://127.0.0.1:8000/api/login/')
+    url = ('http://127.0.0.1:8000/api/login')
     data = {
         "username": "tej",
         "password": "Qwerty@123"
@@ -35,12 +35,12 @@ def default_login():
 
 def logout():
     # url = ('http://127.0.0.1:8000')
-    response = s.session.post(s.sessionURL+"/api/logout/")
+    response = s.session.post("http://" + s.sessionURL+"/api/logout")
     print(response.text)
     print(response.status_code)
 
 def post_story(payload):
-    response = s.session.post(s.sessionURL + "/api/stories/", data=payload)
+    response = s.session.post("http://" + s.sessionURL + "/api/stories", data=payload)
     print(response.text)
     print(response.status_code)
 
@@ -57,18 +57,30 @@ def post_story(payload):
 #     print(response.text)
 #     print(response.status_code)
 
-def get_news(id, payload):
-    url = ('http://127.0.0.1:8000/api/stories/')
-    # payload = {
-    #     "story_cat": "*",
-    #     "story_region": "*",
-    #     "story_date": "*"
-    # }
+def list_agencies():
+    url = ('http://newssites.pythonanywhere.com/api/directory/')
+    response = s.session.get(url)
+    data = json.loads(response.text)
+
+    return data
+
+def get_news(url, payload):
+    url = url + "/api/stories"
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = s.session.get(url, params=payload, headers=headers)
     print(response.status_code)
     if response.status_code == 200:
-        display_news(response.text)
+        data = json.loads(response.text)
+        print("\n")
+        for story in data["stories"]:
+            print("Key: ".ljust(15), story["key"])
+            print("Headline: ".ljust(15) + story["headline"])
+            print("Category: ".ljust(15) + story["story_cat"])
+            print("Region: ".ljust(15) + story["story_region"])
+            print("Author: ".ljust(15) + story["author"])
+            print("Date: ".ljust(15) + story["story_date"])
+            print("Details: ".ljust(15) + story["story_details"])
+            print("\n")
     else:
         print(response.text)
 
@@ -87,20 +99,25 @@ def process_news_switches(data):
         elif switch.startswith("-date="):
             date = switch.split("=")[1][1:-1] # remove quotes from string
     payload = {"story_cat": cat, "story_region": reg, "story_date": date}
-    # print(payload)
-    get_news(id, payload)
 
-
-def display_news(data):
-    stories = json.loads(data)
-    for story in stories:
-        print(json.dumps(story, indent=4))
+    if id != "*":
+        data = list_agencies()
+        for agency in data:
+            if agency["agency_code"] == id:
+                url = agency["url"]
+                name = agency["agency_name"]
+                print(name)
+                print(url)
+                break
+        print("AGENCY: " + name)
+        get_news(url, payload)
 
 
 def delete_story(key):
-    response = s.session.delete(s.sessionURL + "/api/stories/" + key)
+    response = s.session.delete(s.sessionURL + "/api/stories" + key)
     print(response.text)
     print(response.status_code)
+
 
 def client_welcome():
     title = '''
@@ -152,7 +169,10 @@ def process_input(command, args):
         process_news_switches(args)
 
     elif command == "list":
-        pass
+        data = list_agencies()
+        for agency in data:
+            print(json.dumps(agency, indent=4))
+
     elif command == "delete":
         key = args[1]
         delete_story(key)

@@ -118,7 +118,7 @@ def story(request):
                     'story_details': n.details
                 })
             # stories = json.dumps(response)
-            return JsonResponse(response,safe=False, status=200, content_type='application/json')
+            return JsonResponse({"stories":response},safe=False, status=200, content_type='application/json')
         except:
             # return HttpResponse(e, status=500, content_type='text/plain')
             return HttpResponse('Error: Bad Request, Error in Payload' , status=400, content_type='text/plain')
