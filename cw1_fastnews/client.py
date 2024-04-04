@@ -68,7 +68,7 @@ def get_news(url, payload):
     url = url + "/api/stories"
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     response = s.session.get(url, params=payload, headers=headers)
-    print(response.status_code)
+
     if response.status_code == 200:
         data = json.loads(response.text)
         print("\n")
@@ -82,7 +82,10 @@ def get_news(url, payload):
             print("Details: ".ljust(15) + story["story_details"])
             print("\n")
     else:
+        print("\n")
+        print(response.status_code)
         print(response.text)
+        print("\n")
 
 def process_news_switches(data):
     id = "*"
@@ -106,11 +109,24 @@ def process_news_switches(data):
             if agency["agency_code"] == id:
                 url = agency["url"]
                 name = agency["agency_name"]
-                print(name)
-                print(url)
                 break
+        print("\n")
         print("AGENCY: " + name)
         get_news(url, payload)
+    else:
+        data = list_agencies()
+        count = 0
+        for agency in data:
+            count += 1
+
+            url = agency["url"]
+            name = agency["agency_name"]
+            print("\n")
+            print("AGENCY: " + name)
+            get_news(url, payload)
+
+            if count == 20:
+                break
 
 
 def delete_story(key):
