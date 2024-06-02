@@ -28,7 +28,6 @@ def view_login(request):
         return HttpResponse(request.method + ': Method Not Allowed', status=405, content_type='text/plain')
 
 
-
 # Function to handle logout
 # Accepts POST request
 # Logs out the user

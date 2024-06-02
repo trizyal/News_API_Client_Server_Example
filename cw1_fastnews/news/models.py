@@ -25,7 +25,7 @@ class News(models.Model):
         ('pol', 'Politics'),
         ('art', 'Art'),
         ('tech', 'Technology'),
-        ('trivia', 'Trivial)')
+        ('trivia', 'Trivial')
     )
     news_id = models.AutoField(primary_key=True, unique=True)
     headline = models.CharField(max_length=64)
